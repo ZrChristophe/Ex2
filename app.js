@@ -1,36 +1,41 @@
 // app.js
-require('dotenv').config(); // lit le fichier .env
+require('dotenv').config(); // charge les variables d'environnement
 const express = require('express');
 const tasksRouter = require('./routes/tasks');
-const connectDB = require('./db'); // import de la connexion DB
+const connectDB = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Connexion à MongoDB
-connectDB();
+// Connexion à MongoDB avant de démarrer le serveur
+connectDB().then(() => {
+  console.log('MongoDB connecté, démarrage du serveur...');
 
-app.use(express.json());
+  app.use(express.json());
 
-// route d'accueil simple
-app.get('/', (req, res) => {
-  return res.json({ message: 'API ToDoList — utilisez /tasks pour voir les tâches' });
-});
+  // Route d'accueil
+  app.get('/', (req, res) => {
+    res.json({ message: 'API ToDoList — utilisez /tasks pour voir les tâches' });
+  });
 
-app.use('/tasks', tasksRouter);
+  // Routes tasks
+  app.use('/tasks', tasksRouter);
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ error: 'Not Found' });
-});
+  // 404 handler
+  app.use((req, res) => {
+    res.status(404).json({ error: 'Not Found' });
+  });
 
-// error handler
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
+  // Error handler
+  app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  });
 
-// démarrage du serveur
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  // Lancement du serveur
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}).catch(err => {
+  console.error('Impossible de connecter à MongoDB:', err.message);
 });
