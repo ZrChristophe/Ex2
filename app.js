@@ -1,8 +1,8 @@
 // app.js
 require('dotenv').config(); // charge les variables d'environnement
 const express = require('express');
-const tasksRouter = require('./routes/tasks');
-const connectDB = require('./db');
+const tasksRouter = require('./src/routes/tasksRoutes');
+const connectDB = require('./src/config/db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
