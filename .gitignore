@@ -12,7 +12,6 @@ yarn-error.log*
 .env
 
 # OS files
-.DS_Store
 Thumbs.db
 
 # Build / Dist folders (si tu en as)
